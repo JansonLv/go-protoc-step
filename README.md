@@ -5,7 +5,7 @@ protoc插件单步调试工具包
 ### step1. 安装
 
 ```shell
-# 安装protoc差距
+# 安装protoc-gen插件
 go install github.com/JansonLv/go-protoc-step/protoc-gen-go-step@latest
 
 # 安装调试包
