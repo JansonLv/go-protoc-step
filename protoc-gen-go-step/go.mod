@@ -1,4 +1,4 @@
-module jansonlv/protoc-gen-go-step
+module github.com/JansonLv/go-protoc-step/protoc-gen-go-step
 
 go 1.19
 
