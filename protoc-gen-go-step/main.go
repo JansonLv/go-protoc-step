@@ -41,6 +41,17 @@ func main() {
 	//Please ask the owner of this code generator to support proto3 optional.--data_out:
 	gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 	resp := gen.Response()
+
+	marshal, _ := protojson.Marshal(req)
+	resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
+		Name:    jsonFileName,
+		Content: proto.String(string(marshal)),
+	})
+	resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
+		Name:    binFileName,
+		Content: proto.String(string(in)),
+	})
+
 	out, err := proto.Marshal(resp)
 	if err != nil {
 		return
@@ -48,43 +59,4 @@ func main() {
 	if _, err := os.Stdout.Write(out); err != nil {
 		return
 	}
-	writeFile(*jsonFileName, req)
-	writeBytes(*binFileName, in)
-
-}
-
-func writeFile(fileName string, req *pluginpb.CodeGeneratorRequest) error {
-	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR, 0600)
-	if err != nil {
-		return err
-	}
-	marshal, err := protojson.Marshal(req)
-	if err != nil {
-		return err
-	}
-	_, err = file.Write(marshal)
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func writeBytes(fileName string, bs []byte) error {
-	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR, 0600)
-	if err != nil {
-		return err
-	}
-	_, err = file.Write(bs)
-	if err != nil {
-		return err
-	}
-	if err := file.Close(); err != nil {
-		return err
-	}
-
-	return nil
 }
